@@ -192,24 +192,59 @@ function ChatWindow({
             <div className="chat-header-actions">
               {otherUserForCall && !chat.isMe && (
                 <>
-                  <button
-                    type="button"
-                    className="btn-icon-action"
-                    title="Audio Call"
-                    aria-label="Audio Call"
-                    onClick={() => initiateCall(otherUserForCall, 'audio', chat._id || chat.id)}
-                  >
-                    <AudioCallIcon size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-icon-action"
-                    title="Video Call"
-                    aria-label="Video Call"
-                    onClick={() => initiateCall(otherUserForCall, 'video', chat._id || chat.id)}
-                  >
-                    <VideoCallIcon size={18} />
-                  </button>
+                  {chat.participants && chat.participants.length > 2 ? (
+                    <>
+                      <button
+                        type="button"
+                        className="btn-icon-action"
+                        title="Group Voice Call"
+                        aria-label="Group Voice Call"
+                        onClick={() => {
+                          const event = new CustomEvent('join-livekit-call', { 
+                            detail: { roomId: chat._id || chat.id, conversationId: chat._id || chat.id, isGroup: true, contextName: displayName, isInitiating: true, audioOnly: true } 
+                          });
+                          window.dispatchEvent(event);
+                        }}
+                      >
+                        <AudioCallIcon size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-icon-action"
+                        title="Group Video Call"
+                        aria-label="Group Video Call"
+                        onClick={() => {
+                          const event = new CustomEvent('join-livekit-call', { 
+                            detail: { roomId: chat._id || chat.id, conversationId: chat._id || chat.id, isGroup: true, contextName: displayName, isInitiating: true, audioOnly: false } 
+                          });
+                          window.dispatchEvent(event);
+                        }}
+                      >
+                        <VideoCallIcon size={18} />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className="btn-icon-action"
+                        title="Audio Call"
+                        aria-label="Audio Call"
+                        onClick={() => initiateCall(otherUserForCall, 'audio', chat._id || chat.id)}
+                      >
+                        <AudioCallIcon size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-icon-action"
+                        title="Video Call"
+                        aria-label="Video Call"
+                        onClick={() => initiateCall(otherUserForCall, 'video', chat._id || chat.id)}
+                      >
+                        <VideoCallIcon size={18} />
+                      </button>
+                    </>
+                  )}
                 </>
               )}
               {onCreateTodo && !isPlanDisabled && (
