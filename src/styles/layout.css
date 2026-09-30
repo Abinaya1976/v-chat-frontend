@@ -1,0 +1,1276 @@
+/* ==========================================================================
+   Workspace Layout & Multi-Column Grid
+   ========================================================================== */
+
+.app-workspace-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* 1. Left Primary Sidebar */
+.app-sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--card-border);
+  flex-shrink: 0;
+}
+
+.brand-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.brand-logo-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.brand-title {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.btn-close-sidebar-mobile {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* Sidebar User Card */
+.sidebar-user-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--card-bg);
+  margin: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+}
+
+.user-card-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.user-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-card-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.btn-profile-menu-trigger {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-profile-menu-trigger:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--card-border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.12), 0 6px 14px -4px rgba(0, 0, 0, 0.06);
+  padding: 6px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.profile-menu-header {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.profile-name-text {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.profile-email-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.profile-menu-divider {
+  height: 1px;
+  background-color: var(--card-border, #e2e8f0);
+  margin: 4px 2px;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.profile-menu-item:hover {
+  background: var(--hover-bg, #f1f5f9);
+  color: var(--primary-accent, #0284c7);
+}
+
+.profile-menu-item .profile-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.profile-menu-item:hover .profile-item-icon {
+  color: var(--primary-accent, #0284c7);
+}
+
+.profile-menu-item.logout-item {
+  color: #dc2626;
+}
+
+.profile-menu-item.logout-item .profile-item-icon {
+  color: #dc2626;
+}
+
+.profile-menu-item.logout-item:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+}
+
+.profile-menu-item.logout-item:hover .profile-item-icon {
+  color: #b91c1c;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) var(--space-md);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 10px 12px 6px;
+}
+
+.nav-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.nav-tab-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.nav-tab-btn.active {
+  background: rgba(2, 132, 199, 0.1);
+  color: var(--primary-accent);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  font-weight: 700;
+}
+
+.nav-icon {
+  font-size: 1.15rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: var(--space-md);
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-action-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.nav-action-btn.logout-action:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* 2. Workspace Body & Header */
+.workspace-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+}
+
+.app-header {
+  height: var(--header-height);
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  gap: var(--space-md);
+  flex-shrink: 0;
+}
+
+/* Hide the top header bar entirely on the chats tab —
+   the chat window takes the full vertical height instead */
+.workspace-main-wrapper[data-tab="chats"] .app-header {
+  display: none;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 200px;
+}
+
+.btn-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btn-hamburger svg {
+  width: 22px;
+  height: 22px;
+}
+
+.header-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.header-center {
+  flex: 1;
+  max-width: 480px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-icon-header {
+  position: relative;
+  background: var(--bg-color);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon-header:hover {
+  color: var(--text-main);
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+.btn-icon-header svg {
+  width: 18px;
+  height: 18px;
+}
+
+.header-user-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  border: 1px solid var(--card-border);
+  padding: 3px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.header-user-pill:hover {
+  background: var(--hover-bg, #f1f5f9);
+  border-color: var(--primary-accent, #0284c7);
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+/* 3. Workspace Content Grid (Subpanel + Stage) */
+.workspace-content-grid {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-subpanel {
+  width: 320px;
+  background-color: var(--subpanel-bg);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.workspace-stage {
+  flex: 1;
+  background-color: var(--stage-bg);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Section Sub-header */
+.section-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.section-sub-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.count-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--hover-bg);
+  color: var(--primary-accent);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 900px) {
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .app-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .btn-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-close-sidebar-mobile {
+    display: block;
+  }
+
+
+  .workspace-subpanel {
+    width: 280px;
+  }
+
+  .app-header {
+    padding: 0 16px;
+  }
+
+  .header-left {
+    min-width: unset;
+    gap: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-user-name {
+    display: none;
+  }
+
+  .header-user-pill {
+    padding: 4px;
+    border-radius: 50%;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .header-left {
+    min-width: unset;
+    gap: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-center {
+    display: none;
+  }
+
+  .app-header {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .workspace-subpanel {
+    width: 100%;
+  }
+
+  .hide-on-mobile-when-chat-open {
+    display: none !important;
+  }
+
+  .workspace-stage {
+    width: 100%;
+  }
+
+  .btn-icon-header {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* ==========================================================================
+   Mobile Bottom Navigation Bar & Mobile Drawer Visibility Standard
+   ========================================================================== */
+
+/* Desktop view: Hide mobile bottom nav & mobile-only drawer items completely */
+.mobile-bottom-nav {
+  display: none;
+}
+
+.sidebar-nav-mobile-only {
+  display: none;
+}
+
+.sidebar-nav-desktop-only {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.mobile-fab {
+  display: none;
+}
+
+/* Mobile & Tablet screens (<= 768px): Unified Mobile Design System */
+@media (max-width: 768px) {
+  .sidebar-nav-desktop-only {
+    display: none;
+  }
+
+  .sidebar-nav-mobile-only {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .sidebar-footer {
+    display: none; /* Secondary items are moved into sidebar drawer list */
+  }
+
+  /* Standardized Mobile Top Header */
+  .app-header {
+    height: 56px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .header-left {
+    min-width: 0;
+    gap: 8px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .header-section-title {
+    font-size: 1.05rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .header-right {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .header-user-name {
+    display: none;
+  }
+
+  .header-user-pill {
+    padding: 3px;
+    border-radius: 50%;
+  }
+
+  /* Admin Header on Mobile */
+  .admin-header .admin-status-badge {
+    display: none !important;
+  }
+
+  .admin-header .btn-switch-workspace {
+    padding: 4px 8px;
+    font-size: 0.74rem;
+  }
+
+  .admin-header .btn-admin-logout {
+    padding: 4px 8px;
+    font-size: 0.74rem;
+  }
+
+  /* Fixed Bottom Navigation Bar */
+  .mobile-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: var(--card-bg, #ffffff);
+    border-top: 1px solid var(--card-border, #e2e8f0);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    padding: 0 8px calc(env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Hide scrollbar for cleaner look */
+  .mobile-bottom-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 68px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    gap: 2px;
+    padding: 2px 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-bottom-nav-item .mobile-nav-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 24px;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-bottom-nav-item .mobile-nav-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    line-height: 1;
+  }
+
+  /* Active Highlighted State */
+  .mobile-bottom-nav-item.active {
+    color: var(--primary-accent, #0284c7);
+  }
+
+  .mobile-bottom-nav-item.active .mobile-nav-icon-wrap {
+    background: rgba(2, 132, 199, 0.12);
+    color: var(--primary-accent, #0284c7);
+  }
+
+  .mobile-bottom-nav-item.active .mobile-nav-label {
+    font-weight: 700;
+    color: var(--primary-accent, #0284c7);
+  }
+
+  .mobile-bottom-nav-item:active {
+    transform: scale(0.95);
+  }
+
+  /* Safe bottom padding so bottom nav never overlaps workspace scroll or message inputs */
+  .workspace-main-wrapper {
+    padding-bottom: 58px;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  .workspace-content-grid {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Subpanel fills full width on mobile when open */
+  .workspace-subpanel {
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .hide-on-mobile-when-no-chat {
+    display: none !important;
+  }
+
+  .mobile-fab {
+    display: flex;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-accent, #0284c7);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 90;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .mobile-fab:active {
+    transform: scale(0.95);
+    background: var(--primary-dark, #0369a1);
+  }
+
+  /* Todo Page Mobile Layout */
+  .workspace-todos-view-wrapper {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .todo-page-wrapper {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    padding: 12px 12px 0;
+    gap: 10px;
+    max-width: 100vw;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .todo-page-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .todo-header-left {
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .todo-icon-box {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .todo-page-title {
+    font-size: 1.15rem;
+    line-height: 1.2;
+  }
+
+  .todo-page-subtitle {
+    font-size: 0.74rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .btn-add-todo-primary {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  .todo-search-row {
+    flex-shrink: 0;
+  }
+
+  .todo-search-box {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .todo-search-input {
+    font-size: 0.82rem;
+  }
+
+  .todo-filters-bar {
+    gap: 8px;
+    padding-bottom: 8px;
+    flex-shrink: 0;
+  }
+
+  .todo-view-tabs {
+    width: 100%;
+    display: flex;
+  }
+
+  .todo-tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .todo-filter-controls {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+  }
+
+  .todo-filter-controls .filter-select-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .todo-filter-select {
+    width: 100%;
+    font-size: 0.75rem;
+    height: 30px;
+    padding: 4px 6px;
+  }
+
+  .todo-page-main {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    padding-right: 2px;
+  }
+
+  .todo-list-container {
+    gap: 16px;
+    padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .todo-card {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .todo-content-body {
+    min-width: 0;
+  }
+
+  .todo-item-title {
+    font-size: 0.88rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .todo-item-description {
+    font-size: 0.78rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .todo-meta-row {
+    gap: 8px 12px;
+    font-size: 0.72rem;
+  }
+
+  /* Team Members Mobile View */
+  .contacts-overview-stage {
+    padding: 16px 12px 70px;
+    height: auto;
+    min-height: calc(100vh - 120px);
+    align-items: flex-start;
+  }
+
+  .contacts-overview-card {
+    padding: 20px 16px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .contacts-overview-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .contacts-overview-card p {
+    font-size: 0.84rem;
+    margin-bottom: 18px;
+  }
+
+  .contacts-quick-summary {
+    gap: 12px;
+  }
+
+  .summary-stat {
+    padding: 10px 14px;
+    flex: 1;
+  }
+
+  .stat-num {
+    font-size: 1.25rem;
+  }
+
+  /* Admin Dashboard Mobile View */
+  .admin-main-wrapper {
+    padding-bottom: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .admin-dashboard-body {
+    padding: 12px 10px;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .admin-overview-container {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .admin-stat-card {
+    padding: 12px !important;
+  }
+
+  .stat-card-value {
+    font-size: 1.4rem !important;
+  }
+
+  .stat-card-label {
+    font-size: 0.68rem !important;
+  }
+
+  .admin-quick-actions-card {
+    padding: 14px 12px;
+    margin-top: 14px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .btn-quick-nav {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  /* Admin Table Horizontal Scroll Containers */
+  .admin-table-card,
+  .admin-card {
+    border-radius: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 12px;
+    padding: 12px 10px;
+  }
+
+  .admin-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .admin-search-input-wrapper {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Mobile Notification Dropdown Panel Positioning */
+  .notification-dropdown-panel {
+    position: fixed !important;
+    top: 56px !important;
+    left: auto !important;
+    right: 8px !important;
+    width: calc(100vw - 16px) !important;
+    max-width: 300px !important;
+    max-height: calc(100vh - 80px) !important;
+    border-radius: 12px !important;
+    z-index: 1100 !important;
+  }
+}
+
+/* Small mobile devices (<= 390px) */
+@media (max-width: 390px) {
+  .app-header {
+    padding: 0 8px;
+  }
+
+  .header-section-title {
+    font-size: 0.95rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+
+  .admin-stat-card {
+    padding: 10px 8px !important;
+  }
+
+  .stat-card-value {
+    font-size: 1.25rem !important;
+  }
+
+  /* Compact Todo sizing for <= 390px (e.g. iPhone 12/13/14/15/16) */
+  .todo-page-wrapper {
+    padding: 10px 8px 0;
+    gap: 8px;
+  }
+
+  .todo-page-title {
+    font-size: 1.05rem;
+  }
+
+  .todo-tab-btn {
+    padding: 5px 6px;
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+
+  .todo-count-badge {
+    font-size: 0.68rem;
+    padding: 1px 4px;
+  }
+
+  .todo-card {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+}
+
+/* Extra-narrow mobile devices (<= 320px) */
+@media (max-width: 320px) {
+  .todo-page-wrapper {
+    padding: 8px 6px 0;
+    gap: 6px;
+  }
+
+  .todo-page-header {
+    gap: 6px;
+  }
+
+  .todo-icon-box {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+
+  .todo-page-title {
+    font-size: 0.98rem;
+  }
+
+  .btn-add-todo-primary {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .todo-tab-btn {
+    padding: 4px 4px;
+    font-size: 0.72rem;
+  }
+
+  .todo-filter-select {
+    font-size: 0.7rem;
+    height: 28px;
+  }
+
+  .todo-card {
+    padding: 8px 6px;
+    gap: 6px;
+  }
+
+  .todo-item-title {
+    font-size: 0.84rem;
+  }
+}
+
+/* ==========================================================================
+   Pinned Chats & Channels Sidebar Section
+   ========================================================================== */
+.pinned-sidebar-section {
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+}
+
+.pinned-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 4px;
+}
+
+.pinned-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #9ca3af);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pinned-count-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--accent-color, #2563eb);
+}
+
+.pinned-sidebar-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pinned-badge-indicator {
+  display: none;
+}
+
+.chat-item-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.btn-pin-item,
+.btn-pin-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  opacity: 0;
+  color: var(--text-muted, #9ca3af);
+  transition: opacity 0.15s ease, transform 0.12s ease, color 0.15s ease;
+  border-radius: 4px;
+}
+
+.chat-list-item:hover .btn-pin-item,
+.channel-list-item:hover .btn-pin-item,
+.chat-list-item:hover .btn-pin-toggle,
+.channel-list-item:hover .btn-pin-toggle,
+.btn-pin-item.pinned-active,
+.btn-pin-toggle.is-pinned {
+  opacity: 1;
+}
+
+.btn-pin-item:hover,
+.btn-pin-toggle:hover {
+  transform: scale(1.15);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-accent, #0284c7);
+}
+
+.btn-pin-item.pinned-active,
+.btn-pin-toggle.is-pinned {
+  opacity: 1;
+  color: var(--primary-accent, #0284c7);
+  filter: none;
+}
+
+.chat-item-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
