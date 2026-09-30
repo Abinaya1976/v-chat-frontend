@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import AttachmentPreview from './AttachmentPreview';
 import { useSettings } from '../../context/SettingsContext';
-import { PollIcon } from '../common/Icons';
+import { PollIcon, MicIcon } from '../common/Icons';
 import CreatePollModal from './CreatePollModal';
+import VoiceRecorder from './VoiceRecorder';
 
 // Recursively convert contentEditable DOM tree to clean Markdown
 const domToMarkdown = (node) => {
@@ -123,6 +124,7 @@ function MessageInput({
 
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showCreatePollModal, setShowCreatePollModal] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const attachMenuRef = useRef(null);
 
   const typingTimeoutRef = useRef(null);
@@ -719,30 +721,58 @@ function MessageInput({
             tabIndex={0}
           />
 
-          <button
-            type="submit"
-            className="btn-send-message"
-            disabled={!canSubmit}
-            aria-label="Send message"
-          >
-            {disabled ? (
-              <span className="send-spinner" aria-hidden="true" />
-            ) : (
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="send-icon"
-              >
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
-            )}
-          </button>
+          {!showVoiceRecorder ? (
+            <>
+              {(!isEmpty || selectedFiles.length > 0) ? (
+                <button
+                  type="submit"
+                  className="btn-send-message"
+                  disabled={!canSubmit}
+                  aria-label="Send message"
+                >
+                  {disabled ? (
+                    <span className="send-spinner" aria-hidden="true" />
+                  ) : (
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="send-icon"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn-mic-record"
+                  onClick={() => setShowVoiceRecorder(true)}
+                  disabled={disabled}
+                  aria-label="Record voice message"
+                >
+                  <MicIcon size={20} />
+                </button>
+              )}
+            </>
+          ) : null}
         </div>
+        
+        {showVoiceRecorder && (
+          <VoiceRecorder 
+            disabled={disabled}
+            onCancel={() => setShowVoiceRecorder(false)}
+            onSend={(audioBlob) => {
+              const file = new File([audioBlob], `VoiceMessage_${Date.now()}.webm`, { type: audioBlob.type || 'audio/webm' });
+              onSendMessage({ messageType: 'audio' }, [file], replyingTo ? (replyingTo._id || replyingTo.id) : null);
+              setShowVoiceRecorder(false);
+            }}
+          />
+        )}
       </form>
 
       {showCreatePollModal && (

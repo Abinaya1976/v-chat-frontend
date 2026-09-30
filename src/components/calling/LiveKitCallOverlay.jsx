@@ -3,7 +3,7 @@ import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/compon
 import '@livekit/components-styles';
 import '../../styles/livekit.css';
 import { useLiveKit } from '../../context/LiveKitContext';
-import { VideoCallIcon, PhoneOffIcon } from '../common/Icons';
+import { VideoCallIcon, PhoneOffIcon, AudioCallIcon } from '../common/Icons';
 
 function LiveKitCallOverlay() {
   const { 
@@ -12,7 +12,8 @@ function LiveKitCallOverlay() {
     endCall, 
     incomingLiveKitCall, 
     acceptLiveKitCall, 
-    declineLiveKitCall 
+    declineLiveKitCall,
+    isAudioOnly
   } = useLiveKit();
   const liveKitUrl = import.meta.env.VITE_LIVEKIT_URL || 'ws://localhost:7880';
 
@@ -30,8 +31,8 @@ function LiveKitCallOverlay() {
           </div>
           <h2 style={{ margin: '10px 0' }}>Group Call in {incomingLiveKitCall.contextName}</h2>
           <p style={{ color: '#666', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <VideoCallIcon size={18} color="#0ea5e9" />
-            {incomingLiveKitCall.inviterName} started a video call
+            {incomingLiveKitCall.audioOnly ? <AudioCallIcon size={18} color="#0ea5e9" /> : <VideoCallIcon size={18} color="#0ea5e9" />}
+            {incomingLiveKitCall.inviterName} started a {incomingLiveKitCall.audioOnly ? 'voice' : 'video'} call
           </p>
           <div style={styles.actions}>
             <button onClick={declineLiveKitCall} style={{ ...styles.button, ...styles.rejectButton }}>
@@ -39,7 +40,7 @@ function LiveKitCallOverlay() {
               Decline
             </button>
             <button onClick={acceptLiveKitCall} style={{ ...styles.button, ...styles.acceptButton }}>
-              <VideoCallIcon size={16} style={{ marginRight: '6px' }} />
+              {incomingLiveKitCall.audioOnly ? <AudioCallIcon size={16} style={{ marginRight: '6px' }} /> : <VideoCallIcon size={16} style={{ marginRight: '6px' }} />}
               Join Call
             </button>
           </div>
@@ -51,9 +52,9 @@ function LiveKitCallOverlay() {
   if (!isCalling || !liveKitToken) return null;
 
   return (
-    <div className="livekit-overlay" style={styles.livekitContainer}>
+    <div className="livekit-overlay" style={styles.livekitContainer} data-audio-only={isAudioOnly}>
       <LiveKitRoom
-        video={true}
+        video={!isAudioOnly}
         audio={true}
         token={liveKitToken}
         serverUrl={liveKitUrl}

@@ -826,6 +826,24 @@ function MessageBubble({
                     );
                   }
 
+                  // Case B2: Audio Attachment
+                  const isAudio = att.fileType?.startsWith('audio/') || message.messageType === 'audio';
+                  if (isAudio) {
+                    return (
+                      <div key={`${att.fileUrl}-${idx}`} className="message-audio-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px', backgroundColor: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                        <audio
+                          controls
+                          preload="metadata"
+                          className="message-audio-player"
+                          style={{ width: '100%', outline: 'none' }}
+                        >
+                          <source src={getFileUrl(att.fileUrl)} type={att.fileType || 'audio/webm'} />
+                          Your browser does not support audio playback.
+                        </audio>
+                      </div>
+                    );
+                  }
+
                   // Case C: General Document / PDF
                   const downloadUrl = getFileUrl(att.fileUrl, true, att.fileName);
                   const isPdf = rawExt === 'pdf' || att.fileType === 'application/pdf';

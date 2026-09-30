@@ -1510,7 +1510,12 @@ function AppLayout() {
       let payload;
       if (hasFiles) {
         payload = new FormData();
-        if (hasText) payload.append('content', (typeof content === 'string' ? content : content.content).trim());
+        if (typeof content === 'string') {
+          if (hasText) payload.append('content', content.trim());
+        } else {
+          if (hasText && content.content) payload.append('content', content.content.trim());
+          if (content.messageType) payload.append('messageType', content.messageType);
+        }
         files.forEach((file) => payload.append('files', file));
       } else if (isPoll) {
         payload = content;
@@ -1573,7 +1578,12 @@ function AppLayout() {
       let payload;
       if (hasFiles) {
         payload = new FormData();
-        if (hasText) payload.append('content', (typeof content === 'string' ? content : content.content).trim());
+        if (typeof content === 'string') {
+          if (hasText) payload.append('content', content.trim());
+        } else {
+          if (hasText && content.content) payload.append('content', content.content.trim());
+          if (content.messageType) payload.append('messageType', content.messageType);
+        }
         files.forEach((file) => payload.append('files', file));
       } else if (isPoll) {
         payload = content;
@@ -2578,6 +2588,8 @@ function AppLayout() {
                       (m) => (m._id || m.id || m)?.toString() === currentUserId?.toString()
                     )
                   )}
+                  contacts={contacts}
+                  onSelectContact={handleMessageContact}
                   currentUserId={currentUserId}
                   onlineUserIds={onlineUserIds}
                   selectedChat={selectedChat}

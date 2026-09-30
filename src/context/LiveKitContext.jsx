@@ -13,10 +13,11 @@ export const LiveKitProvider = ({ children }) => {
   const [liveKitToken, setLiveKitToken] = useState(null);
   const [liveKitRoomName, setLiveKitRoomName] = useState(null);
   const [isCalling, setIsCalling] = useState(false);
+  const [isAudioOnly, setIsAudioOnly] = useState(false);
   const [incomingLiveKitCall, setIncomingLiveKitCall] = useState(null);
   const [callStartTime, setCallStartTime] = useState(0);
 
-  const startCall = async ({ roomName, participantName, conversationId, channelId }) => {
+  const startCall = async ({ roomName, participantName, conversationId, channelId, audioOnly = false }) => {
     try {
       const { data } = await api.post('/livekit/token', {
         roomName,
@@ -27,6 +28,7 @@ export const LiveKitProvider = ({ children }) => {
       if (data.success && data.token) {
         setLiveKitToken(data.token);
         setLiveKitRoomName(roomName);
+        setIsAudioOnly(audioOnly);
         setIsCalling(true);
         setCallStartTime(Date.now());
       }
@@ -45,24 +47,27 @@ export const LiveKitProvider = ({ children }) => {
     setLiveKitToken(null);
     setLiveKitRoomName(null);
     setIsCalling(false);
+    setIsAudioOnly(false);
   };
 
   useEffect(() => {
     const handleJoinLiveKitCall = (e) => {
-      const { roomId, channelId, conversationId, isInitiating, contextName } = e.detail;
+      const { roomId, channelId, conversationId, isInitiating, contextName, audioOnly } = e.detail;
       if (user) {
         if (isInitiating && socket) {
           if (channelId) {
             socket.emit('livekit:start_channel_call', {
               channelId,
               roomId,
-              contextName
+              contextName,
+              audioOnly
             });
           } else if (conversationId) {
             socket.emit('livekit:start_group_call', {
               conversationId,
               roomId,
-              contextName
+              contextName,
+              audioOnly
             });
           }
         }
@@ -70,7 +75,8 @@ export const LiveKitProvider = ({ children }) => {
           roomName: roomId,
           participantName: user.name || 'User',
           channelId,
-          conversationId
+          conversationId,
+          audioOnly
         });
       }
     };
@@ -95,6 +101,7 @@ export const LiveKitProvider = ({ children }) => {
         participantName: user.name || 'User',
         channelId: incomingLiveKitCall.channelId,
         conversationId: incomingLiveKitCall.conversationId,
+        audioOnly: incomingLiveKitCall.audioOnly
       });
       if (socket) {
         socket.emit('livekit:accept', {
@@ -121,6 +128,7 @@ export const LiveKitProvider = ({ children }) => {
       liveKitToken, 
       liveKitRoomName, 
       isCalling, 
+      isAudioOnly,
       incomingLiveKitCall,
       startCall, 
       joinCall, 
