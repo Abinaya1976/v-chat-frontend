@@ -1510,12 +1510,7 @@ function AppLayout() {
       let payload;
       if (hasFiles) {
         payload = new FormData();
-        if (typeof content === 'string') {
-          if (hasText) payload.append('content', content.trim());
-        } else {
-          if (hasText && content.content) payload.append('content', content.content.trim());
-          if (content.messageType) payload.append('messageType', content.messageType);
-        }
+        if (hasText) payload.append('content', (typeof content === 'string' ? content : content.content).trim());
         files.forEach((file) => payload.append('files', file));
       } else if (isPoll) {
         payload = content;
@@ -1542,15 +1537,13 @@ function AppLayout() {
         });
       }
     } catch (err) {
-      console.error('Failed to send message:', err.message);
+      console.error('Failed to send message:', err.message, err.response?.data);
       if (err.response?.data?.code === 'ORG_EXPIRED' || err.response?.data?.companyStatus === 'expired') {
         setLiveStatus('expired');
       } else if (err.response?.data?.code === 'ORG_SUSPENDED' || err.response?.data?.companyStatus === 'suspended') {
         setLiveStatus('suspended');
-      } else if (err.response?.data?.code === 'STORAGE_LIMIT_EXCEEDED' || err.response?.data?.code === 'FILE_SIZE_LIMIT_EXCEEDED') {
-        setApiError(err.response.data.message);
       } else {
-        setApiError(err.response?.data?.message || 'Failed to send message. Please try again.');
+        setApiError('Failed to send message. Please try again.');
       }
     } finally {
       setIsSendingMessage(false);
@@ -1578,12 +1571,7 @@ function AppLayout() {
       let payload;
       if (hasFiles) {
         payload = new FormData();
-        if (typeof content === 'string') {
-          if (hasText) payload.append('content', content.trim());
-        } else {
-          if (hasText && content.content) payload.append('content', content.content.trim());
-          if (content.messageType) payload.append('messageType', content.messageType);
-        }
+        if (hasText) payload.append('content', (typeof content === 'string' ? content : content.content).trim());
         files.forEach((file) => payload.append('files', file));
       } else if (isPoll) {
         payload = content;
@@ -1610,15 +1598,13 @@ function AppLayout() {
         });
       }
     } catch (err) {
-      console.error('Failed to send channel message:', err.message);
+      console.error('Failed to send channel message:', err.message, err.response?.data);
       if (err.response?.data?.code === 'ORG_EXPIRED' || err.response?.data?.companyStatus === 'expired') {
         setLiveStatus('expired');
       } else if (err.response?.data?.code === 'ORG_SUSPENDED' || err.response?.data?.companyStatus === 'suspended') {
         setLiveStatus('suspended');
-      } else if (err.response?.data?.code === 'STORAGE_LIMIT_EXCEEDED' || err.response?.data?.code === 'FILE_SIZE_LIMIT_EXCEEDED') {
-        setApiError(err.response.data.message);
       } else {
-        setApiError(err.response?.data?.message || 'Failed to send message to channel.');
+        setApiError('Failed to send message to channel.');
       }
     } finally {
       setIsSendingMessage(false);
@@ -2588,8 +2574,6 @@ function AppLayout() {
                       (m) => (m._id || m.id || m)?.toString() === currentUserId?.toString()
                     )
                   )}
-                  contacts={contacts}
-                  onSelectContact={handleMessageContact}
                   currentUserId={currentUserId}
                   onlineUserIds={onlineUserIds}
                   selectedChat={selectedChat}

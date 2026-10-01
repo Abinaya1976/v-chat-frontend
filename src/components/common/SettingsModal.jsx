@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -6,34 +6,6 @@ function SettingsModal({ isOpen, onClose }) {
   const { settings, saving, updateSettingsSection } = useSettings();
   const { user } = useAuth();
   const [activeSubTab, setActiveSubTab] = useState('notifications');
-  const [storageInfo, setStorageInfo] = useState(null);
-  const [loadingStorage, setLoadingStorage] = useState(false);
-
-  const isCompanyAdmin = user && ['admin', 'super_admin', 'owner'].includes(user.role);
-
-  useEffect(() => {
-    if (activeSubTab === 'storage' && isCompanyAdmin && user?.currentOrganization) {
-      const fetchStorage = async () => {
-        setLoadingStorage(true);
-        try {
-          const res = await fetch(`/api/organizations/${user.currentOrganization._id || user.currentOrganization}/storage`, {
-            headers: { Authorization: `Bearer ${sessionStorage.getItem('chatapp_token')}` }
-          });
-          const data = await res.json();
-          if (data.success) {
-            setStorageInfo(data);
-          } else {
-            console.error('Failed to load storage details:', data.message);
-          }
-        } catch (e) {
-          console.error('Failed to fetch storage info:', e);
-        } finally {
-          setLoadingStorage(false);
-        }
-      };
-      fetchStorage();
-    }
-  }, [activeSubTab, isCompanyAdmin, user]);
 
   if (!isOpen) return null;
 
@@ -156,21 +128,6 @@ function SettingsModal({ isOpen, onClose }) {
               </svg>
               <span>About</span>
             </button>
-            
-            {isCompanyAdmin && (
-              <button
-                type="button"
-                className={`settings-nav-item ${activeSubTab === 'storage' ? 'active' : ''}`}
-                onClick={() => setActiveSubTab('storage')}
-              >
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                  <line x1="12" y1="22.08" x2="12" y2="12" />
-                </svg>
-                <span>Storage</span>
-              </button>
-            )}
           </div>
 
           {/* Right Section Content */}
@@ -396,65 +353,6 @@ function SettingsModal({ isOpen, onClose }) {
                     <span className="about-meta-value status-active-text">● All Systems Operational</span>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* 6. Storage Section (Admin Only) */}
-            {activeSubTab === 'storage' && isCompanyAdmin && (
-              <div className="settings-section-pane">
-                <h3 className="settings-section-title">Workspace Storage</h3>
-                <p className="settings-section-desc">Manage your organization's storage quota and usage.</p>
-                
-                {!user?.currentOrganization ? (
-                   <div style={{ padding: '20px', color: 'var(--text-muted)' }}>
-                     Please select an active workspace to view its storage details.
-                   </div>
-                ) : loadingStorage ? (
-                   <div style={{ padding: '20px', color: 'var(--text-muted)' }}>Loading storage details...</div>
-                ) : storageInfo ? (
-                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
-                     <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '20px', borderRadius: '12px' }}>
-                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                         <strong style={{ color: 'var(--text-main)', fontSize: '1.1rem' }}>{storageInfo.planName} Plan</strong>
-                         <span style={{ color: 'var(--primary-accent)', fontWeight: '600' }}>
-                           {storageInfo.isPerUser ? 'Per-User Quota' : 'Shared Quota'}
-                         </span>
-                       </div>
-                       
-                       {(() => {
-                         const used = storageInfo.currentUsedBytes;
-                         const limit = storageInfo.totalStorageLimitBytes;
-                         const usedGB = (used / (1024 * 1024 * 1024)).toFixed(2);
-                         const limitGB = (limit / (1024 * 1024 * 1024)).toFixed(2);
-                         const remainingGB = Math.max(0, limit - used) / (1024 * 1024 * 1024);
-                         const percent = Math.min(100, limit > 0 ? (used / limit) * 100 : 0);
-                         
-                         const isNearlyFull = percent >= 90;
-                         
-                         return (
-                           <>
-                             <div style={{ marginBottom: '10px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                               {usedGB} GB of {limitGB} GB used • {remainingGB.toFixed(2)} GB remaining
-                             </div>
-                             
-                             <div style={{ width: '100%', height: '12px', backgroundColor: 'var(--hover-bg)', borderRadius: '6px', overflow: 'hidden' }}>
-                               <div style={{ width: `${percent}%`, height: '100%', backgroundColor: isNearlyFull ? '#ef4444' : 'var(--primary-accent)', transition: 'width 0.3s ease' }} />
-                             </div>
-                             
-                             {isNearlyFull && (
-                               <div style={{ marginTop: '15px', padding: '10px 14px', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                 Warning: Storage is almost full. File uploads will be rejected once the limit is reached.
-                               </div>
-                             )}
-                           </>
-                         );
-                       })()}
-                     </div>
-                   </div>
-                ) : (
-                   <div style={{ padding: '20px', color: '#ef4444' }}>Failed to load storage details.</div>
-                )}
               </div>
             )}
           </div>

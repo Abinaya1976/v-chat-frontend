@@ -392,13 +392,20 @@ function GoogleCalendarPanel({ onConnectionChange, prefillEvent, onPrefillConsum
     const mm = padDate(dateObj.getMonth() + 1);
     const dd = padDate(dateObj.getDate());
     
-    setAddToCalPrefill({
-      startDate: `${yyyy}-${mm}-${dd}`,
-      endDate: `${yyyy}-${mm}-${dd}`,
-      allDay: true,
-      calendarId: selectedCalendarId
-    });
-    setAddToCalOpen(true);
+    const nextDate = new Date(dateObj);
+    nextDate.setDate(nextDate.getDate() + 1);
+    const nyyyy = nextDate.getFullYear();
+    const nmm = padDate(nextDate.getMonth() + 1);
+    const ndd = padDate(nextDate.getDate());
+
+    const datesParam = `${yyyy}${mm}${dd}/${nyyyy}${nmm}${ndd}`;
+
+    if (status?.googleEmail) {
+      const email = encodeURIComponent(status.googleEmail);
+      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&src=${email}&dates=${datesParam}`, "_blank", "noopener,noreferrer");
+    } else {
+      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${datesParam}`, "_blank", "noopener,noreferrer");
+    }
   };
 
   const openEdit = (evt) => {

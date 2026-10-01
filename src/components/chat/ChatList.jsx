@@ -6,8 +6,6 @@ function ChatList({
   chats = [],
   joinedChannels = [],
   items = null,
-  contacts = [],
-  onSelectContact = null,
   currentUserId,
   onlineUserIds,
   selectedChat,
@@ -23,39 +21,9 @@ function ChatList({
   onUnpinItem = null,
   onSelectNotification = null,
 }) {
-  // Identify contacts that don't have an active conversation yet
-  const existingParticipantIds = new Set();
-  chats.forEach(c => {
-    if (c.participants && Array.isArray(c.participants)) {
-      const otherP = c.participants.find(p => (p?._id || p?.id || p)?.toString() !== currentUserId?.toString());
-      if (otherP) {
-        existingParticipantIds.add((otherP._id || otherP.id || otherP)?.toString());
-      }
-    }
-  });
-
-  const stubConversations = (contacts || [])
-    .filter(contact => {
-      const cid = (contact._id || contact.id)?.toString();
-      return cid && cid !== currentUserId?.toString() && !existingParticipantIds.has(cid);
-    })
-    .map(contact => ({
-      _id: `stub-${contact._id || contact.id}`,
-      isStub: true,
-      contactData: contact,
-      participants: [
-        { _id: currentUserId }, // mock self
-        contact
-      ],
-      lastMessageAt: null, // No message yet
-      unread: 0,
-      organization: contact.organization,
-    }));
-
-  // Combine direct conversations, stub conversations, and joined channels into a single unified list
+  // Combine direct conversations and joined channels into a single unified list
   const rawList = items || [
     ...chats,
-    ...stubConversations,
     ...joinedChannels.filter(
       (jc) => !chats.some((c) => (c._id || c.id)?.toString() === (jc._id || jc.id)?.toString())
     ),
@@ -178,13 +146,6 @@ function ChatList({
   const unpinnedItems = filteredItems.filter((item) => !isItemPinned(item));
 
   const handleSelectItem = (item) => {
-    if (item.isStub) {
-      if (onSelectContact) {
-        onSelectContact(item.contactData);
-      }
-      return;
-    }
-
     const isChannel = Boolean(
       item.isChannel ||
       item.itemType === 'channel' ||

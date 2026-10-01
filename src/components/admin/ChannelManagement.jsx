@@ -97,7 +97,7 @@ function ChannelManagement() {
         isPrivate,
       });
       if (res.success) {
-        setSuccessMessage(`Channel "${name}" created successfully`);
+        setSuccessMessage(`Channel #${name} created successfully`);
         setCreateModalState({ isOpen: false, name: '', description: '', isPrivate: false, loading: false });
         await loadChannels();
       }
@@ -138,7 +138,7 @@ function ChannelManagement() {
         isArchived,
       });
       if (res.success) {
-        setSuccessMessage(`Channel "${name}" updated successfully`);
+        setSuccessMessage(`Channel #${name} updated successfully`);
         setEditModalState({ isOpen: false, channel: null, name: '', description: '', isPrivate: false, isArchived: false, loading: false });
         await loadChannels();
       }
@@ -169,7 +169,7 @@ function ChannelManagement() {
     try {
       const res = await updateAdminChannel(channel._id, { isArchived: nextArchived });
       if (res.success) {
-        setSuccessMessage(`Channel "${channel.name}" ${nextArchived ? 'archived' : 'unarchived'} successfully`);
+        setSuccessMessage(`Channel #${channel.name} ${nextArchived ? 'archived' : 'unarchived'} successfully`);
         setArchiveModalState({ isOpen: false, channel: null, loading: false });
         await loadChannels();
       }
@@ -192,7 +192,7 @@ function ChannelManagement() {
     try {
       const res = await deleteAdminChannel(channel._id);
       if (res.success) {
-        setSuccessMessage(`Channel "${channel.name}" deleted and message stream purged.`);
+        setSuccessMessage(`Channel #${channel.name} deleted and message stream purged.`);
         setDeleteModalState({ isOpen: false, channel: null, loading: false });
         await loadChannels();
       }

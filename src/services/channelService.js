@@ -73,9 +73,7 @@ export const sendChannelMessage = async (channelId, payload, replyTo = null) => 
     if (replyTo) {
       payload.append('replyTo', replyTo);
     }
-    const response = await api.post(`/channels/${channelId}/messages`, payload, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await api.post(`/channels/${channelId}/messages`, payload);
     return response.data;
   }
 

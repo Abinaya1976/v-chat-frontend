@@ -35,35 +35,6 @@ function ChannelItem({
 
   const time = formatChatTime(channel.lastMessageAt || channel.updatedAt || channel.createdAt);
 
-  let snippet = channel.description || `${memberCount} member${memberCount === 1 ? '' : 's'}`;
-  if (channel.lastMessage) {
-    if (typeof channel.lastMessage === 'object') {
-      let content = channel.lastMessage.content || '';
-      if (!content && channel.lastMessage.attachments && channel.lastMessage.attachments.length > 0) {
-        const attachments = channel.lastMessage.attachments;
-        if (attachments.length > 1) {
-          content = `📎 ${attachments.length} attachments`;
-        } else {
-          const type = attachments[0].fileType || '';
-          if (type.startsWith('image/')) content = 'Photo';
-          else if (type.startsWith('video/')) content = 'Video';
-          else if (type === 'application/pdf') content = 'PDF';
-          else content = '📎 File';
-        }
-      }
-      
-      const senderName = channel.lastMessage.sender?.name 
-        ? channel.lastMessage.sender.name.split(' ')[0] 
-        : '';
-        
-      if (content) {
-        snippet = senderName ? `${senderName}: ${content}` : content;
-      }
-    } else if (typeof channel.lastMessage === 'string') {
-      snippet = channel.lastMessage;
-    }
-  }
-
   const handleJoinClick = (e) => {
     e.stopPropagation();
     if (onJoin) {
@@ -101,7 +72,9 @@ function ChannelItem({
         </div>
         <div className="channel-desc-row">
           <p className="channel-desc">
-            {snippet}
+            {channel.lastMessage?.content
+              ? `${channel.lastMessage.sender?.name ? channel.lastMessage.sender.name.split(' ')[0] + ': ' : ''}${channel.lastMessage.content}`
+              : (channel.description || `${memberCount} member${memberCount === 1 ? '' : 's'}`)}
           </p>
         </div>
       </div>

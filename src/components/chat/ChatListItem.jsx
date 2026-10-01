@@ -63,24 +63,7 @@ function ChatListItem({
         const senderName =
           chat.lastMessage.sender?.name ||
           (chat.lastMessage.sender === currentUserId ? 'You' : '');
-        let content = chat.lastMessage.content || '';
-        const strippedContent = content.replace(/<[^>]+>/g, '').trim();
-        
-        if (!strippedContent && chat.lastMessage.attachments && chat.lastMessage.attachments.length > 0) {
-          const attachments = chat.lastMessage.attachments;
-          if (attachments.length > 1) {
-            content = `📎 ${attachments.length} attachments`;
-          } else {
-            const type = attachments[0].fileType || '';
-            if (type.startsWith('image/')) content = 'Photo';
-            else if (type.startsWith('video/')) content = 'Video';
-            else if (type === 'application/pdf') content = 'PDF';
-            else content = '📎 File';
-          }
-        } else {
-          content = strippedContent || content;
-        }
-        
+        const content = chat.lastMessage.content || '';
         snippet = senderName ? `${senderName}: ${content}` : content;
       } else {
         snippet = chat.lastMessage;
@@ -100,34 +83,9 @@ function ChatListItem({
     if (isSelfConv) {
       displayName = 'Me';
       displayAvatar = (chat.participants && chat.participants[0]?.avatar) || chat.avatar;
-      if (chat.lastMessage) {
-        if (typeof chat.lastMessage === 'object') {
-          let content = chat.lastMessage.content || '';
-          const strippedContent = content.replace(/<[^>]+>/g, '').trim();
-
-          if (!strippedContent && chat.lastMessage.attachments && chat.lastMessage.attachments.length > 0) {
-            const attachments = chat.lastMessage.attachments;
-            if (attachments.length > 1) {
-              content = `📎 ${attachments.length} attachments`;
-            } else {
-              const type = attachments[0].fileType || '';
-              if (type.startsWith('image/')) content = 'Photo';
-              else if (type.startsWith('video/')) content = 'Video';
-              else if (type === 'application/pdf') content = 'PDF';
-              else content = '📎 File';
-            }
-          } else {
-            content = strippedContent || content;
-          }
-          
-          const senderName = chat.lastMessage.sender?.name || (chat.lastMessage.sender === currentUserId ? 'You' : '');
-          snippet = senderName ? `${senderName}: ${content}` : (content || 'Notes to self');
-        } else {
-          snippet = chat.lastMessage;
-        }
-      } else {
-        snippet = 'Notes to self';
-      }
+      snippet = chat.lastMessage
+        ? (typeof chat.lastMessage === 'object' ? chat.lastMessage.content : chat.lastMessage)
+        : 'Notes to self';
       time = formatChatTime(chat.lastMessageAt || chat.updatedAt || chat.createdAt);
       status = 'online';
     } else {
@@ -146,30 +104,7 @@ function ChatListItem({
       time = formatChatTime(chat.lastMessageAt || chat.updatedAt || chat.createdAt);
 
       if (chat.lastMessage) {
-        if (typeof chat.lastMessage === 'object') {
-          let content = chat.lastMessage.content || '';
-          const strippedContent = content.replace(/<[^>]+>/g, '').trim();
-
-          if (!strippedContent && chat.lastMessage.attachments && chat.lastMessage.attachments.length > 0) {
-            const attachments = chat.lastMessage.attachments;
-            if (attachments.length > 1) {
-              content = `📎 ${attachments.length} attachments`;
-            } else {
-              const type = attachments[0].fileType || '';
-              if (type.startsWith('image/')) content = 'Photo';
-              else if (type.startsWith('video/')) content = 'Video';
-              else if (type === 'application/pdf') content = 'PDF';
-              else content = '📎 File';
-            }
-          } else {
-            content = strippedContent || content;
-          }
-          
-          const senderName = chat.lastMessage.sender?.name || (chat.lastMessage.sender === currentUserId ? 'You' : '');
-          snippet = senderName ? `${senderName}: ${content}` : content;
-        } else {
-          snippet = chat.lastMessage;
-        }
+        snippet = typeof chat.lastMessage === 'object' ? chat.lastMessage.content : chat.lastMessage;
       }
     }
 

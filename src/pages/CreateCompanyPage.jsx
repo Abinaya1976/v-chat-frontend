@@ -54,7 +54,7 @@ function CreateCompanyPage({ onBack, onSuccess }) {
           return;
         }
 
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://v-chat-production-aba4.up.railway.app';
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
         const res = await fetch(`${backendUrl}/api/organizations/register-company`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

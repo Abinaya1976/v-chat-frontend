@@ -9,17 +9,17 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'https://v-chat-production-aba4.up.railway.app',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
       '/uploads': {
-        target: 'https://v-chat-production-aba4.up.railway.app',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
       '/socket.io': {
-        target: 'https://v-chat-production-aba4.up.railway.app',
+        target: 'http://localhost:5000',
         ws: true,
         changeOrigin: true,
       },

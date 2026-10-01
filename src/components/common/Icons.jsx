@@ -466,19 +466,22 @@ export const VideoOffIcon = ({ size = 18, color = 'currentColor', strokeWidth = 
 
 
 
+
 export const PlayIcon = ({ size = 18, color = 'currentColor', strokeWidth = 2, className, style }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} stroke={color} strokeWidth={strokeWidth} fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-  </svg>
+  <SvgIcon size={size} color={color} strokeWidth={strokeWidth} className={className} style={style}>
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </SvgIcon>
 );
+
 export const PauseIcon = ({ size = 18, color = 'currentColor', strokeWidth = 2, className, style }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} stroke={color} strokeWidth={strokeWidth} fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-    <rect x="6" y="4" width="4" height="16"></rect>
-    <rect x="14" y="4" width="4" height="16"></rect>
-  </svg>
+  <SvgIcon size={size} color={color} strokeWidth={strokeWidth} className={className} style={style}>
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
+  </SvgIcon>
 );
+
 export const StopIcon = ({ size = 18, color = 'currentColor', strokeWidth = 2, className, style }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} stroke={color} strokeWidth={strokeWidth} fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-  </svg>
+  <SvgIcon size={size} color={color} strokeWidth={strokeWidth} className={className} style={style}>
+    <rect x="6" y="6" width="12" height="12" />
+  </SvgIcon>
 );

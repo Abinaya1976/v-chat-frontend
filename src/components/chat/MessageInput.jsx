@@ -115,6 +115,7 @@ function MessageInput({
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [fileError, setFileError] = useState(null);
@@ -124,7 +125,6 @@ function MessageInput({
 
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showCreatePollModal, setShowCreatePollModal] = useState(false);
-  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const attachMenuRef = useRef(null);
 
   const typingTimeoutRef = useRef(null);
@@ -529,23 +529,33 @@ function MessageInput({
 
         {/* Mention Autocomplete Menu */}
         {mentionActive && suggestions.length > 0 && (
-          <div className="mention-autocomplete-menu" role="listbox" aria-label="Mention suggestions">
-            <div className="mention-menu-items" style={{ padding: '8px' }}>
+          <div className="mention-dropdown-menu" role="listbox" aria-label="Mention suggestions">
+            <div className="mention-dropdown-header">
+              <span>Members</span>
+              <span className="mention-header-hint">Use ↑↓ to navigate, Enter to select</span>
+            </div>
+            <div className="mention-dropdown-list">
               {suggestions.map((item, idx) => (
                 <div
                   key={item.id || idx}
-                  className={`mention-menu-item ${idx === mentionIndex ? 'active' : ''} ${item.isAll ? 'mention-item-all' : ''}`}
-                  onClick={(e) => { e.preventDefault(); selectMention(item); }}
-                  onMouseDown={(e) => { e.preventDefault(); selectMention(item); }}
+                  className={`mention-item ${idx === mentionIndex ? 'active' : ''} ${item.isAll ? 'mention-all-item' : ''}`}
+                  onClick={() => selectMention(item)}
                   role="option"
                   aria-selected={idx === mentionIndex}
-                  style={{ padding: '12px 16px', borderRadius: '8px', marginBottom: '4px' }}
                 >
-                  <div className="mention-item-details">
+                  <div className="mention-item-avatar">
+                    {item.isAll ? (
+                      <span className="mention-all-icon">📣</span>
+                    ) : (
+                      <span>{item.label.charAt(1).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div className="mention-item-info">
                     <div className="mention-item-label-row">
                       <span className="mention-item-label">{item.label}</span>
                       {item.isAll && <span className="mention-all-tag-badge">Notify all</span>}
                     </div>
+                    {item.subtitle && <span className="mention-item-subtitle">{item.subtitle}</span>}
                   </div>
                 </div>
               ))}
@@ -614,164 +624,162 @@ function MessageInput({
           </button>
         </div>
 
-        <div className="message-input-wrapper">
-          {/* Hidden File Picker Input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            multiple
-            accept="image/*,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
-            style={{ display: 'none' }}
-          />
-
-          {/* Attachment Dropdown Menu */}
-          <div className="attach-dropdown-wrapper" ref={attachMenuRef}>
-            <button
-              type="button"
-              className={`btn-attach-file ${showAttachMenu ? 'active' : ''}`}
-              onClick={() => setShowAttachMenu((prev) => !prev)}
+        {isVoiceMode ? (
+          <div style={{ width: '100%', padding: '10px' }}>
+            <VoiceRecorder
               disabled={disabled}
-              title="Attach or Create Poll"
-              aria-label="Attach or Create Poll"
-              aria-haspopup="true"
-              aria-expanded={showAttachMenu}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              onCancel={() => setIsVoiceMode(false)}
+              onSend={(file, type) => {
+                setIsVoiceMode(false);
+                onSendMessage('', [file], replyingTo ? (replyingTo._id || replyingTo.id) : null);
+              }}
+            />
+          </div>
+        ) : (
+          <div className="message-input-wrapper">
+            {/* Hidden File Picker Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              multiple
+              accept="image/*,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
+              style={{ display: 'none' }}
+            />
+
+            {/* Attachment Dropdown Menu */}
+            <div className="attach-dropdown-wrapper" ref={attachMenuRef}>
+              <button
+                type="button"
+                className={`btn-attach-file ${showAttachMenu ? 'active' : ''}`}
+                onClick={() => setShowAttachMenu((prev) => !prev)}
+                disabled={disabled}
+                title="Attach or Create Poll"
+                aria-label="Attach or Create Poll"
+                aria-haspopup="true"
+                aria-expanded={showAttachMenu}
               >
-                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-              </svg>
-            </button>
-
-            {showAttachMenu && (
-              <div className="attach-menu-dropdown" role="menu">
-                <button
-                  type="button"
-                  className="attach-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    setShowAttachMenu(false);
-                    fileInputRef.current?.click();
-                  }}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <div className="attach-menu-item-icon">
-                    <svg
-                      viewBox="0 0 24 24"
-                      width="18"
-                      height="18"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                    </svg>
-                  </div>
-                  <div className="attach-menu-item-text">
-                    <span className="attach-menu-item-title">Attach File</span>
-                    <span className="attach-menu-item-sub">Images, videos, documents</span>
-                  </div>
-                </button>
+                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                </svg>
+              </button>
 
-                <button
-                  type="button"
-                  className="attach-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    setShowAttachMenu(false);
-                    setShowCreatePollModal(true);
-                  }}
-                >
-                  <div className="attach-menu-item-icon poll-icon-accent">
-                    <PollIcon size={18} color="#2563eb" strokeWidth={2.4} />
-                  </div>
-                  <div className="attach-menu-item-text">
-                    <span className="attach-menu-item-title">Create Poll</span>
-                    <span className="attach-menu-item-sub">Ask a question with 7-day expiry</span>
-                  </div>
-                </button>
-              </div>
+              {showAttachMenu && (
+                <div className="attach-menu-dropdown" role="menu">
+                  <button
+                    type="button"
+                    className="attach-menu-item"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowAttachMenu(false);
+                      fileInputRef.current?.click();
+                    }}
+                  >
+                    <div className="attach-menu-item-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                      </svg>
+                    </div>
+                    <div className="attach-menu-item-text">
+                      <span className="attach-menu-item-title">Attach File</span>
+                      <span className="attach-menu-item-sub">Images, videos, documents</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="attach-menu-item"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowAttachMenu(false);
+                      setShowCreatePollModal(true);
+                    }}
+                  >
+                    <div className="attach-menu-item-icon poll-icon-accent">
+                      <PollIcon size={18} color="#2563eb" strokeWidth={2.4} />
+                    </div>
+                    <div className="attach-menu-item-text">
+                      <span className="attach-menu-item-title">Create Poll</span>
+                      <span className="attach-menu-item-sub">Ask a question with 7-day expiry</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div
+              ref={editorRef}
+              className="message-rich-editor"
+              contentEditable={!disabled}
+              data-placeholder={disabled ? 'Sending attachment...' : placeholder}
+              data-empty={isEmpty ? 'true' : 'false'}
+              onInput={handleInput}
+              onKeyDown={handleKeyDown}
+              onKeyUp={(e) => {
+                handleInput();
+                updateActiveFormats();
+              }}
+              onMouseUp={updateActiveFormats}
+              onPaste={handlePaste}
+              role="textbox"
+              aria-multiline="true"
+              aria-label="Message input"
+              tabIndex={0}
+            />
+
+            {isEmpty && selectedFiles.length === 0 ? (
+              <button
+                type="button"
+                className="btn-send-message"
+                onClick={() => setIsVoiceMode(true)}
+                disabled={disabled}
+                aria-label="Record Voice Message"
+                title="Record Voice Message"
+              >
+                <MicIcon size={20} />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn-send-message"
+                disabled={!canSubmit}
+                aria-label="Send message"
+              >
+                {disabled ? (
+                  <span className="send-spinner" aria-hidden="true" />
+                ) : (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="send-icon"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                )}
+              </button>
             )}
           </div>
-
-          <div
-            ref={editorRef}
-            className="message-rich-editor"
-            contentEditable={!disabled}
-            data-placeholder={disabled ? 'Sending attachment...' : placeholder}
-            data-empty={isEmpty ? 'true' : 'false'}
-            onInput={handleInput}
-            onKeyDown={handleKeyDown}
-            onKeyUp={(e) => {
-              handleInput();
-              updateActiveFormats();
-            }}
-            onMouseUp={updateActiveFormats}
-            onPaste={handlePaste}
-            role="textbox"
-            aria-multiline="true"
-            aria-label="Message input"
-            tabIndex={0}
-          />
-
-          {!showVoiceRecorder ? (
-            <>
-              {(!isEmpty || selectedFiles.length > 0) ? (
-                <button
-                  type="submit"
-                  className="btn-send-message"
-                  disabled={!canSubmit}
-                  aria-label="Send message"
-                >
-                  {disabled ? (
-                    <span className="send-spinner" aria-hidden="true" />
-                  ) : (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="send-icon"
-                    >
-                      <line x1="22" y1="2" x2="11" y2="13" />
-                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                    </svg>
-                  )}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="btn-mic-record"
-                  onClick={() => setShowVoiceRecorder(true)}
-                  disabled={disabled}
-                  aria-label="Record voice message"
-                >
-                  <MicIcon size={20} />
-                </button>
-              )}
-            </>
-          ) : null}
-        </div>
-        
-        {showVoiceRecorder && (
-          <VoiceRecorder 
-            disabled={disabled}
-            onCancel={() => setShowVoiceRecorder(false)}
-            onSend={(audioBlob) => {
-              const file = new File([audioBlob], `VoiceMessage_${Date.now()}.webm`, { type: audioBlob.type || 'audio/webm' });
-              onSendMessage({ messageType: 'audio' }, [file], replyingTo ? (replyingTo._id || replyingTo.id) : null);
-              setShowVoiceRecorder(false);
-            }}
-          />
         )}
       </form>
 

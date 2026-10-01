@@ -388,7 +388,7 @@ function PendingApprovalScreen({ user, organization }) {
           </div>
         </div>
 
-        <p className="pending-info-text" style={{ marginBottom: '24px' }}>
+        <p className="pending-info-text">
           Once the Super Admin approves your company with an assigned subscription and valid start/end dates,
           you will automatically become the Company Admin and gain full access to your workspace.
         </p>
@@ -531,7 +531,7 @@ function MainApp() {
     return (
       <div className="auth-wrapper">
         <div className="main-card">
-          <h2 className="auth-title">Connecting to V-Chat...</h2>
+          <h2 className="auth-title">Connecting to Flock...</h2>
           <p className="auth-subtitle">Restoring your workspace session</p>
         </div>
       </div>

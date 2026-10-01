@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create a configured Axios instance
 // Uses live Railway API by default or overridden via VITE_API_URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://v-chat-production-aba4.up.railway.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

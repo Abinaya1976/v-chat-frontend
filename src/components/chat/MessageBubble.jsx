@@ -35,9 +35,6 @@ const getCallStatusText = (callData, isOwn) => {
   const status = callData?.status || 'ended';
   const durationStr = formatCallDuration(callData?.duration);
 
-  if (status === 'started') {
-    return 'Started a group call';
-  }
   if (status === 'ended') {
     const dir = isOwn ? 'Outgoing' : 'Incoming';
     return durationStr ? `${dir} · ${durationStr}` : dir;
@@ -826,24 +823,6 @@ function MessageBubble({
                     );
                   }
 
-                  // Case B2: Audio Attachment
-                  const isAudio = att.fileType?.startsWith('audio/') || message.messageType === 'audio';
-                  if (isAudio) {
-                    return (
-                      <div key={`${att.fileUrl}-${idx}`} className="message-audio-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px', backgroundColor: 'var(--bg-secondary)', borderRadius: '12px' }}>
-                        <audio
-                          controls
-                          preload="metadata"
-                          className="message-audio-player"
-                          style={{ width: '100%', outline: 'none' }}
-                        >
-                          <source src={getFileUrl(att.fileUrl)} type={att.fileType || 'audio/webm'} />
-                          Your browser does not support audio playback.
-                        </audio>
-                      </div>
-                    );
-                  }
-
                   // Case C: General Document / PDF
                   const downloadUrl = getFileUrl(att.fileUrl, true, att.fileName);
                   const isPdf = rawExt === 'pdf' || att.fileType === 'application/pdf';
@@ -899,7 +878,7 @@ function MessageBubble({
             {/* Call History Message Card */}
             {message.messageType === 'call' && (
               <div className="message-call-card">
-                <div className={`call-card-icon-badge ${['missed', 'declined', 'cancelled'].includes(message.call?.status) ? 'call-missed' : message.call?.status === 'started' ? 'call-started' : ''}`}>
+                <div className={`call-card-icon-badge ${['missed', 'declined', 'cancelled'].includes(message.call?.status) ? 'call-missed' : ''}`}>
                   {message.call?.callType === 'video' ? (
                     <VideoCallIcon size={18} />
                   ) : (
